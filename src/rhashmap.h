@@ -15,6 +15,7 @@ typedef struct rhashmap rhashmap_t;
 
 #define	RHM_NOCOPY		0x01
 #define	RHM_NONCRYPTO		0x02
+#define RHM_RAPIDHASH       0x04
 
 rhashmap_t *	rhashmap_create(size_t, unsigned);
 void		rhashmap_destroy(rhashmap_t *);

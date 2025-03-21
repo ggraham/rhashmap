@@ -45,36 +45,33 @@ OBJS=		rhashmap.o
 OBJS+=		murmurhash.o
 OBJS+=		siphash.o
 
-$(LIB).la:	LDFLAGS+=	-rpath $(LIBDIR) -version-info 1:0:0
-install/%.la:	ILIBDIR=	$(DESTDIR)/$(LIBDIR)
+$(LIB).a:	LDFLAGS+=
+install/%.a:	ILIBDIR=	$(DESTDIR)/$(LIBDIR)
 install:	IINCDIR=	$(DESTDIR)/$(INCDIR)/
 #install:	IMANDIR=	$(DESTDIR)/$(MANDIR)/man3/
 
 obj: $(OBJS)
 
-lib: $(LIB).la
+lib: $(LIB).a
 
-%.lo: %.c
-	libtool --mode=compile --tag CC $(CC) $(CFLAGS) -c $<
+%.o: %.c
+	gcc -c -fPIC -O3 $(CFLAGS) $<
 
-$(LIB).la: $(shell echo $(OBJS) | sed 's/\.o/\.lo/g')
-	libtool --mode=link --tag CC $(CC) $(LDFLAGS) -o $@ $(notdir $^)
+$(LIB).a: $(OBJS)
+	gcc -shared -o $@ $(LDFLAGS) $(notdir $^)
 
-install/%.la: %.la
+install/%.a: %.a
 	mkdir -p $(ILIBDIR)
-	libtool --mode=install install -c $(notdir $@) $(ILIBDIR)/$(notdir $@)
+	cp $(notdir $@) $(ILIBDIR)/$(notdir $@)
 
-install: $(addprefix install/,$(LIB).la)
-	libtool --mode=finish $(LIBDIR)
+install: $(addprefix install/,$(LIB).a)
 	mkdir -p $(IINCDIR) && install -c $(INCS) $(IINCDIR)
-	#mkdir -p $(IMANDIR) && install -c $(MANS) $(IMANDIR)
 
 tests: $(OBJS) t_$(PROJ).o
 	$(CC) $(CFLAGS) $^ -o t_$(PROJ)
 	MALLOC_CHECK_=3 ./t_$(PROJ)
 
 clean:
-	libtool --mode=clean rm
-	rm -rf .libs *.o *.lo *.la t_$(PROJ)
+	rm -rf .libs *.o *.lo *.la *.a t_$(PROJ)
 
 .PHONY: all obj lib install tests clean

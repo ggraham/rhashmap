@@ -21,7 +21,7 @@ test_basic(void)
 	rhashmap_t *hmap;
 	void *ret;
 
-	hmap = rhashmap_create(0, 0);
+	hmap = rhashmap_create(0, 4);
 	assert(hmap != NULL);
 
 	ret = rhashmap_get(hmap, "test", 4);
@@ -49,7 +49,7 @@ test_large(void)
 	rhashmap_t *hmap;
 	void *ret;
 
-	hmap = rhashmap_create(0, 0);
+	hmap = rhashmap_create(0, 4);
 	assert(hmap != NULL);
 
 	for (unsigned i = 0; i < nitems; i++) {
@@ -84,7 +84,7 @@ test_delete(void)
 	uint64_t *keys;
 	void *ret;
 
-	hmap = rhashmap_create(0, 0);
+	hmap = rhashmap_create(0, 4);
 	assert(hmap != NULL);
 
 	keys = calloc(nitems, sizeof(uint64_t));
@@ -137,7 +137,7 @@ test_random(void)
 	unsigned char **keys;
 	int *lens;
 
-	hmap = rhashmap_create(0, 0);
+	hmap = rhashmap_create(0, 4);
 	assert(hmap != NULL);
 
 	keys = calloc(nitems, sizeof(unsigned char *));
@@ -203,7 +203,7 @@ test_walk(void)
 	uintmax_t iter;
 	size_t klen;
 
-	hmap = rhashmap_create(0, 0);
+	hmap = rhashmap_create(0, 4);
 	assert(hmap != NULL);
 
 	iter = RHM_WALK_BEGIN;

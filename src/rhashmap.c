@@ -29,6 +29,7 @@
 #include "rhashmap.h"
 #include "fastdiv.h"
 #include "utils.h"
+#include "rapidhash.h"
 
 #define	MAX_GROWTH_STEP		(1024U * 1024)
 
@@ -69,7 +70,9 @@ compute_hash(const rhashmap_t *hmap, const void *key, const size_t len)
 	 */
 	if (hmap->flags & RHM_NONCRYPTO) {
 		return murmurhash3(key, len, hmap->hashkey);
-	}
+	} else if (hmap->flags & RHM_RAPIDHASH) {
+        return rapidhash(key, len);
+    }
 	return halfsiphash(key, len, hmap->hashkey);
 }
 
