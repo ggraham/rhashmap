@@ -19,13 +19,6 @@
  *	https://cs.uwaterloo.ca/research/tr/1986/CS-86-14.pdf
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <inttypes.h>
-#include <limits.h>
-#include <assert.h>
-
 #include "rhashmap.h"
 #include "fastdiv.h"
 #include "utils.h"
@@ -35,31 +28,6 @@
 
 #define	APPROX_85_PERCENT(x)	(((x) * 870) >> 10)
 #define	APPROX_40_PERCENT(x)	(((x) * 409) >> 10)
-
-typedef struct {
-	void *		key;
-	void *		val;
-	uint64_t	hash	: 32;
-	uint64_t	psl	: 16;
-	uint64_t	len	: 16;
-} rh_bucket_t;
-
-struct rhashmap {
-	unsigned	size;
-	unsigned	nitems;
-	unsigned	flags;
-	unsigned	minsize;
-	uint64_t	divinfo;
-	rh_bucket_t *	buckets;
-	uint64_t	hashkey;
-
-	/*
-	 * Small optimisation for a single element case: allocate one
-	 * bucket together with the hashmap structure -- it will generally
-	 * fit within the same cache-line.
-	 */
-	rh_bucket_t	init_bucket;
-};
 
 static inline uint32_t __attribute__((always_inline))
 compute_hash(const rhashmap_t *hmap, const void *key, const size_t len)
